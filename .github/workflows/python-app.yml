@@ -77,4 +77,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: .  # 上传当前目录的所有内容
+          asset_name: output-${{ steps.date.outputs.date }}.zip  # 设置要上传的资产的名称
 
