@@ -1,3 +1,33 @@
+#name: Run and publish python program
+#
+#on:
+#  push:
+#    branches: [ master ]
+#
+#jobs:
+#  run-and-publish:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v2
+#      - name: Set up Python
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: 3.11
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install -r requirements.txt
+#      - name: Run main.py
+#        run: python main.py
+#      - name: Get current date
+#        id: date
+#        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+#      - name: Publish output directory
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: output-${{ steps.date.outputs.date }}
+#          path: ${{ steps.date.outputs.date }}
 name: Run and publish python program
 
 on:
@@ -10,21 +40,41 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.11
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
       - name: Run main.py
         run: python main.py
+
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - name: Publish output directory
-        uses: actions/upload-artifact@v2
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: output-${{ steps.date.outputs.date }}
-          path: ${{ steps.date.outputs.date }}
+          tag_name: ${{ steps.date.outputs.date }}
+          release_name: Output-${{ steps.date.outputs.date }}
+          draft: false
+          prerelease: false
+
+      - name: Upload output directory to release
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: .  # 上传当前目录的所有内容
+
