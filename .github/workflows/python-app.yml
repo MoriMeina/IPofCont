@@ -18,15 +18,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Create output directory
-        run: mkdir -p output
-      - name: Run main.py
-        run: python main.py
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Run main.py
+        run: python main.py
       - name: Publish output directory
         uses: actions/upload-artifact@v2
         with:
-          name: -${{ steps.date.outputs.date }}
-          path: output
+          name: output-${{ steps.date.outputs.date }}
+          path: ${{ steps.date.outputs.date }}
