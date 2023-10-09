@@ -20,29 +20,15 @@ jobs:
           pip install -r requirements.txt
       - name: Run main.py
         run: python main.py
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - name: Create draft release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.date.outputs.date }}
-          release_name: Output-${{ steps.date.outputs.date }}
-          draft: true
-          prerelease: false
-      - name: Upload output directory to release
+      - name: Zip output directory
+        run: zip -r output-${{ steps.date.outputs.date }}.zip . -i output-${{ steps.date.outputs.date }}/*.*
+        working-directory: ${{ steps.date.outputs.date }}
+      - name: Upload ZIP asset to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.date.outputs.date }}
+          asset_path: ./output-${{ steps.date.outputs.date }}.zip
           asset_name: output-${{ steps.date.outputs.date }}.zip
           asset_content_type: application/zip
-      - name: Publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ${{ steps.date.outputs.date }}/*.txt #重新修复
