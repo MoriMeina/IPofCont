@@ -64,10 +64,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.date.outputs.date }}
+          tag_name: v${{ steps.date.outputs.date }}  # 更改为不重复的标签名称
           release_name: Output-${{ steps.date.outputs.date }}
           draft: false
           prerelease: false
+
 
       - name: Upload output directory to release
         id: upload-release-asset
