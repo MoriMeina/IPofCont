@@ -1,10 +1,8 @@
-name: Python application
+name: Daily Python Job
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  schedule:
+    - cron: '0 0 * * *'  # 每天午夜执行 (UTC 时间)
 
 permissions:
   contents: read
@@ -42,7 +40,23 @@ jobs:
         mkdir -p "$(date +'%Y-%m-%d')"
       working-directory: ./path/to/output  # 你的输出文件夹的路径
 
+    - name: Run Python script
+      run: python main.py  # 替换为你的 main.py 脚本的路径
+
     - name: Copy output to date-based directory
       run: |
         cp -r . "$(date +'%Y-%m-%d')"
       working-directory: ./path/to/output  # 你的输出文件夹的路径
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          path/to/output/* # 替换为你的输出文件夹的路径
+        token: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get Release URL
+      run: echo "Release URL: ${{ steps.create_release.outputs.upload_url }}"
