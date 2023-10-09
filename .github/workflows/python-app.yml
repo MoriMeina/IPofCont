@@ -28,5 +28,5 @@ jobs:
       - name: Publish output directory
         uses: actions/upload-artifact@v2
         with:
-          name: output-${{ steps.date.outputs.date }}
+          name: -${{ steps.date.outputs.date }}
           path: output
