@@ -43,6 +43,7 @@ def main():
 
 
 def write(file_name, lists):
+    lists.sort()
     with open(file_name, "a") as file:
         for item in lists:
             file.write(item)
