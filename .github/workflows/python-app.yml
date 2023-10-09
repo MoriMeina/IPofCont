@@ -1,30 +1,43 @@
-name: Run and publish python program
+name: Python Release
 
 on:
   push:
-    branches: [master]
+    branches:
+      - main  # 或者您的主分支名称
 
 jobs:
-  run-and-publish:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.11
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - name: Run main.py
-        run: python main.py
-      - name: Publish output directory
-        uses: actions/upload-artifact@v2
-        with:
-          name: output-${{ steps.date.outputs.date }}
-          path: ${{ steps.date.outputs.date }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11  # 更改为您需要的 Python 版本
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt  # 如果有依赖需要安装，请替换为正确的命令
+
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+    - name: Create output folder
+      run: mkdir ${{ steps.date.outputs.date }}
+
+    - name: Run Python script
+      run: python main.py  # 替换为您的 Python 脚本名称
+
+    - name: Create release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./${{ steps.date.outputs.date }}/*
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get the release URL
+      run: echo "Release URL: ${{ steps.create_release.outputs.upload_url }}"
