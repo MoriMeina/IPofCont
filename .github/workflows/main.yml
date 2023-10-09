@@ -1,0 +1,62 @@
+name: Daily Python Job
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天午夜执行 (UTC 时间)
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Test with pytest
+      run: |
+        pytest
+
+    - name: Create date-based output directory
+      run: |
+        mkdir -p "$(date +'%Y-%m-%d')"
+      working-directory: ./path/to/output  # 你的输出文件夹的路径
+
+    - name: Run Python script
+      run: python main.py  # 替换为你的 main.py 脚本的路径
+
+    - name: Copy output to date-based directory
+      run: |
+        cp -r . "$(date +'%Y-%m-%d')"
+      working-directory: ./path/to/output  # 你的输出文件夹的路径
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          path/to/output/* # 替换为你的输出文件夹的路径
+        token: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get Release URL
+      run: echo "Release URL: ${{ steps.create_release.outputs.upload_url }}"
