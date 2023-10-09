@@ -45,4 +45,4 @@ jobs:
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ steps.date.outputs.date }}/*.txt
+          files: ${{ steps.date.outputs.date }}/*.txt #重新修复
