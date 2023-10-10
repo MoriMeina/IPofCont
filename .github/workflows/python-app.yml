@@ -28,14 +28,6 @@ jobs:
           echo $PWD/$(date +'%Y-%m-%d')
           echo "IP_File=$PWD/$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 #运行脚本
-
-
-
-
-
-
-
-
       - name: Generate Release
         uses: actions/create-release@v1
         with:
