@@ -27,8 +27,9 @@ jobs:
 
       - name: Run main.py
         run: |
-          echo $(date +'%Y-%m-%d')
 #          python main.py
+          cd $(date +'%Y-%m-%d')
+          echo "IP_CIDR=$PWD" >> $GITHUB_ENV
           
 
 #运行脚本
