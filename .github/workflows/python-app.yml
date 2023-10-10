@@ -14,17 +14,31 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.11
-      - name: Install dependencies
+      - name: Install dependencies and init ENV
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
       - name: Run main.py
-        run: python main.py
+        run: |
+          python main.py
+          cd ${{env.DATE}}
+          echo "IP_PATH=$pwd" >> $GITHUB_ENV
+
+
+
+
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - name: Publish output directory
-        uses: actions/upload-artifact@v2
+
+
+      - name: Upload Firmware To Release
+        uses: ncipollo/release-action@v1
         with:
-          name: output-${{ steps.date.outputs.date }}
-          path: ${{ steps.date.outputs.date }}
+          name: ${{env.DATE}} IPs_range
+          tag: ${{env.DATE}} IPs_range
+          token: ${{secret.GITHUB_TOKEN}}
+          artifacts: ${{env.IP_PATH}}
+          body: |
+            这是根据大洲分布IP的IP CIDR块list
