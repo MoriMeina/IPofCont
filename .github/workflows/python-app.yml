@@ -38,7 +38,7 @@ jobs:
         with:
           name: ${{env.DATE}} IPs_range
           tag: ${{env.DATE}} IPs_range
-          token: ${{secret.GITHUB_TOKEN}}
+          token: ${{secrets.GITHUB_TOKEN}}
           artifacts: ${{env.IP_PATH}}
           body: |
             这是根据大洲分布IP的IP CIDR块list
