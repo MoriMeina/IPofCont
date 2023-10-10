@@ -35,6 +35,6 @@ jobs:
           release_name: $(date +'%Y-%m-%d')-IP-for-continent
           body: |
             这是根据大洲分布IP的IP CIDR块list
-          body_path: ${{FILE_PATH}}/*.txt
+          body_path: ${{env.FILE_PATH}}/*.txt
           draft: false
           prerelease: false
