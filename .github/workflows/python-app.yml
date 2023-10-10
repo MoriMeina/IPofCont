@@ -21,23 +21,35 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 #配置环境
       - name: Run main.py
         run: |
           python main.py
           echo $PWD/$(date +'%Y-%m-%d')
           echo "FILE_PATH=$PWD/$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-#运行脚本
       - name: Generate Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: $(date +'%Y-%m-%d')-IP-for-continent
-          release_name: $(date +'%Y-%m-%d')-IP-for-continent
+          name: R${{ env.DATE }} IP-for-continent
+          allowUpdates: true
+          tag: IP-for-continent
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: ${{ env.FILE_PATH }}/*
           body: |
-            这是根据大洲分布IP的IP CIDR块list
-          body_path: ${{env.FILE_PATH}}/*
-          draft: false
-          prerelease: false
+              这是根据大洲分布IP的IP CIDR块list
+#运行脚本
+#      - name: Generate Release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: $(date +'%Y-%m-%d')-IP-for-continent
+#          release_name: $(date +'%Y-%m-%d')-IP-for-continent
+#          body: |
+#            这是根据大洲分布IP的IP CIDR块list
+#          body_path: ${{env.FILE_PATH}}/*
+#          draft: false
+#          prerelease: false
+
 
