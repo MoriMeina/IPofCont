@@ -24,8 +24,9 @@ jobs:
 #配置环境
       - name: Run main.py
         run: |
-          echo $PWD$(date +'%Y-%m-%d')
-          echo "IP_CIDR=$PWD$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          python main.py
+          echo $PWD/$(date +'%Y-%m-%d')
+          echo "IP_File=$PWD/$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 #运行脚本
 
 
@@ -35,12 +36,14 @@ jobs:
 
 
 
-#      - name: Upload Firmware To Release
-#        uses: ncipollo/release-action@v1
-#        with:
-#          name: ${{env.DATE}}-IPs_range
-#          tag: ${{env.DATE}}-IPs_range
-#          token: ${{secrets.GITHUB_TOKEN}}
-#          artifacts: ${{env.IP_PATH}}
-#          body: |
-#            这是根据大洲分布IP的IP CIDR块list
+      - name: Generate Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: $(date +'%Y-%m-%d')-IP-for-continent
+          release_name: $(date +'%Y-%m-%d')-IP-for-continent
+          body: |
+            这是根据大洲分布IP的IP CIDR块list
+          body_path: |
+            ${{IP_File}}/*.txt
+          draft: false
+          prerelease: false
