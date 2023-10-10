@@ -1,6 +1,8 @@
 name: Run and publish python program
 
 on:
+  schedule:
+    - cron: "0 2 * * *"
   push:
     branches: [ master ]
 
@@ -31,7 +33,7 @@ jobs:
       - name: Generate Release
         uses: ncipollo/release-action@v1
         with:
-          name: R${{ env.DATE }} IP-for-continent
+          name: ${{ env.DATE }} IP-for-continent
           allowUpdates: true
           tag: IP-for-continent
           token: ${{ secrets.GITHUB_TOKEN }}
