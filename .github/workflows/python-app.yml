@@ -24,10 +24,8 @@ jobs:
 #配置环境
       - name: Run main.py
         run: |
-          cd $(date +'%Y-%m-%d')
-          echo "IP_CIDR=$PWD" >> $GITHUB_ENV
           
-
+          echo "IP_CIDR=$PWD$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 #运行脚本
 
 
