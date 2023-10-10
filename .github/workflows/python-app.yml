@@ -41,8 +41,8 @@ jobs:
       - name: Upload Firmware To Release
         uses: ncipollo/release-action@v1
         with:
-          name: ${{env.DATE}} IPs_range
-          tag: ${{env.DATE}} IPs_range
+          name: ${{env.DATE}}-IPs_range
+          tag: ${{env.DATE}}-IPs_range
           token: ${{secrets.GITHUB_TOKEN}}
           artifacts: ${{env.IP_PATH}}
           body: |
