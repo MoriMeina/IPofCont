@@ -11,23 +11,6 @@ Oceana_IP = []
 Antarctica_IP = []
 
 
-# def datalist():
-#     request(AsiaList, Asia_IP)
-#     request(EuropeList, Europe_IP)
-#     request(AfricaList, Africa_IP)
-#     request(NorthAmericaList, NorthAmerica_IP)
-#     request(SouthAmericaList, SouthAmerica_IP)
-#     request(OceanaList, Oceana_IP)
-#     request(AntarcticaList, Antarctica_IP)
-#
-#
-# def request(data, res_list):
-#     for url in data:
-#         response = requests.get(url)
-#         if response.status_code == 200:
-#             res_list.append(response.text)
-#         else:
-#             print(f"请求失败，链接：{url}")
 def datalist():
     # 创建一个空列表，用于存储线程对象
     threads = []
@@ -48,7 +31,7 @@ def datalist():
 
 def request(data, res_list):
     for url in data:
-        response = requests.get(url)
+        response = requests.get(url, verify=False)
         if response.status_code == 200:
             res_list.append(response.text)
         else:
