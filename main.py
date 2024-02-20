@@ -59,6 +59,57 @@ def process_files(input_file, output_file):
     ip2cidr(lines, output_file)
 
 
+def aggregate_cidr(cidr_list):
+    networks = [ipaddress.ip_network(cidr) for cidr in cidr_list]
+    aggregated_networks = ipaddress.collapse_addresses(networks)
+    return aggregated_networks
+
+
+def aggregate_cidr_in_file(output_file):
+    cidr_list = []
+    with open(output_file, 'r') as f:
+        for line in f:
+            cidr_list.append(line.strip())
+
+    # 聚合CIDR地址
+    aggregated_cidr = aggregate_cidr(cidr_list)
+
+    # 写入聚合后的CIDR地址到文件
+    with open(output_file, 'w') as f:
+        for cidr in aggregated_cidr:
+            f.write(str(cidr) + '\n')
+            print(output_file + ':' + str(cidr))
+
+
+# def main():
+#     threads = []
+#
+#     urls_filenames = [
+#         (EU_url, EU_filename, 'CIDR-EU.txt'),
+#         (AF_url, AF_filename, 'CIDR-AF.txt'),
+#         (AS_url, AS_filename, 'CIDR-AS.txt'),
+#         (NA_url, NA_filename, 'CIDR-NA.txt'),
+#         (SA_url, SA_filename, 'CIDR-SA.txt'),
+#         (OC_url, OC_filename, 'CIDR-OC.txt')
+#     ]
+#
+#     for url, filename, output_file in urls_filenames:
+#         thread = threading.Thread(target=downloadIPRange, args=(url, filename))
+#         thread.start()
+#         threads.append(thread)
+#
+#     for thread in threads:
+#         thread.join()
+#
+#     # 使用多线程处理文件
+#     file_threads = []
+#     for _, filename, output_file in urls_filenames:
+#         thread = threading.Thread(target=process_files, args=(filename, output_file))
+#         thread.start()
+#         file_threads.append(thread)
+#
+#     for thread in file_threads:
+#         thread.join()
 def main():
     threads = []
 
@@ -79,15 +130,13 @@ def main():
     for thread in threads:
         thread.join()
 
-    # 使用多线程处理文件
-    file_threads = []
+    # 等待所有文件处理完成后再进行聚合
     for _, filename, output_file in urls_filenames:
-        thread = threading.Thread(target=process_files, args=(filename, output_file))
-        thread.start()
-        file_threads.append(thread)
+        process_files(filename, output_file)
 
-    for thread in file_threads:
-        thread.join()
+    # 聚合CIDR地址
+    for _, _, output_file in urls_filenames:
+        aggregate_cidr_in_file(output_file)
 
 
 if __name__ == '__main__':
