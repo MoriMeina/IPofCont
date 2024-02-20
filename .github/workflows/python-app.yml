@@ -28,7 +28,7 @@ jobs:
         run: |
           python main.py
           echo $PWD/$(date +'%Y-%m-%d')
-          echo "FILE_PATH=$PWD/$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "FILE_PATH=$PWD" >> $GITHUB_ENV
 
       - name: Generate Release
         uses: ncipollo/release-action@v1
