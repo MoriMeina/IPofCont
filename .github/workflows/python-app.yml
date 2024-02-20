@@ -37,6 +37,6 @@ jobs:
           allowUpdates: true
           tag: ${{ env.DATE }}-IP-for-continent
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: ${{ env.FILE_PATH }}/*
+          artifacts: ${{ env.FILE_PATH }}/CIDR-*
           body: |
               这是根据大洲分布IP的IP CIDR块list
