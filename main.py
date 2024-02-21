@@ -103,24 +103,6 @@ def aggregate_cidr_in_file(output_file, pbar):
                     pbar_inner.update(1)  # 更新聚合进度条
                     pbar.update(1)  # 更新总进度条
 
-
-def exp_cn_as():
-    # 读取CN.txt中的内容，用于后续匹配
-    with open('CN.txt', 'r', encoding='utf-8') as cn_file:
-        cn_lines = cn_file.readlines()
-
-    # 读取AS.txt中的内容，并过滤掉含有CN.txt中内容的行
-    with open('CIDR-AS.txt', 'r', encoding='utf-8') as as_file:
-        as_lines = as_file.readlines()
-
-    # 过滤后的内容将存储在filtered_lines列表中
-    filtered_lines = [line for line in as_lines if not any(cn_line.strip() in line.strip() for cn_line in cn_lines)]
-
-    # 将过滤后的内容写入新文件AS_filtered.txt中
-    with open('CIDR-AS_filtered_CN.txt', 'w', encoding='utf-8') as filtered_file:
-        filtered_file.writelines(filtered_lines)
-
-
 def main():
     download_threads = []
 
@@ -174,7 +156,6 @@ def main():
     for thread in process_threads + aggregate_threads:
         thread.join()
 
-    exp_cn_as()
 
 
 if __name__ == '__main__':
