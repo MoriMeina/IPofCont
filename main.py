@@ -18,7 +18,7 @@ OC_filename = "OC.txt"
 CN_url = "https://suip.biz/?act=all-country-ip&country=CN&all-download"
 CN_filename = "CN.txt"
 
-total_files = 6
+total_files = 7
 total_lines = 0
 
 # 锁用于确保输出的稳定性
@@ -153,7 +153,7 @@ def main():
         process_threads = []
 
         for _, filename in urls_filenames:
-            thread = threading.Thread(target=process_files, args=(filename, filename, total_lines, pbar))
+            thread = threading.Thread(target=process_files, args=(filename, filename, pbar))
             thread.start()
             process_threads.append(thread)
 
@@ -169,6 +169,10 @@ def main():
 
     for thread in aggregate_threads:
         thread.join()  # 等待聚合线程完成
+
+    # 等待所有线程完成后执行exp_cn_as()
+    for thread in process_threads + aggregate_threads:
+        thread.join()
 
     exp_cn_as()
 
